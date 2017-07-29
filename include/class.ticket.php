@@ -2583,6 +2583,113 @@ implements RestrictedAccess, Threadable {
         return $response;
     }
 
+    function postReplyCustom($vars, $poster, $staffId, &$errors, $alert=true, $claim=true) {
+        global $thisstaff, $cfg;
+
+        //if (!$vars['poster'] && $thisstaff)
+        //    $vars['poster'] = $thisstaff;
+
+        //if (!$vars['staffId'] && $thisstaff)
+        //    $vars['staffId'] = $thisstaff->getId();
+
+        $vars['poster'] = $poster;
+        $vars['staffId'] = $staffId;
+
+        if (!$vars['ip_address'] && $_SERVER['REMOTE_ADDR'])
+            $vars['ip_address'] = $_SERVER['REMOTE_ADDR'];
+
+        if (!($response = $this->getThread()->addResponse($vars, $errors)))
+            return null;
+
+        $dept = $this->getDept();
+        $assignee = $this->getStaff();
+        // Set status - if checked.
+        if ($vars['reply_status_id']
+            && $vars['reply_status_id'] != $this->getStatusId()
+        ) {
+            $this->setStatus($vars['reply_status_id']);
+        }
+
+
+        // Claim on response bypasses the department assignment restrictions
+        $claim = ($claim
+                && $cfg->autoClaimTickets()
+                && !$dept->disableAutoClaim());
+        if ($claim && $thisstaff && $this->isOpen() && !$this->getStaffId()) {
+            $this->setStaffId($thisstaff->getId()); //direct assignment;
+        }
+
+        if(!$this->isAssigned()) {
+            //$this->setStaffId($thisstaff->getId());
+            $this->setStaffId($vars['staffId']);
+        }
+
+        $this->lastrespondent = $response->staff;
+
+        $this->onResponse($response, array('assignee' => $assignee)); //do house cleaning..
+
+        /* email the user??  - if disabled - then bail out */
+        if (!$alert)
+            return $response;
+
+        $email = $dept->getEmail();
+        $options = array('thread'=>$response);
+        $signature = $from_name = '';
+        if ($thisstaff && $vars['signature']=='mine')
+            $signature=$thisstaff->getSignature();
+        elseif ($vars['signature']=='dept' && $dept->isPublic())
+            $signature=$dept->getSignature();
+
+        if ($thisstaff && ($type=$thisstaff->getReplyFromNameType())) {
+            switch ($type) {
+                case 'mine':
+                    if (!$cfg->hideStaffName())
+                        $from_name = (string) $thisstaff->getName();
+                    break;
+                case 'dept':
+                    if ($dept->isPublic())
+                        $from_name = $dept->getName();
+                    break;
+                case 'email':
+                default:
+                    $from_name =  $email->getName();
+            }
+
+            if ($from_name)
+                $options += array('from_name' => $from_name);
+
+        }
+
+        $variables = array(
+            'response' => $response,
+            'signature' => $signature,
+            'staff' => $thisstaff,
+            'poster' => $thisstaff
+        );
+
+        $user = $this->getOwner();
+        if (($email=$dept->getEmail())
+            && ($tpl = $dept->getTemplate())
+            && ($msg=$tpl->getReplyMsgTemplate())
+        ) {
+            $msg = $this->replaceVars($msg->asArray(),
+                $variables + array('recipient' => $user)
+            );
+            $attachments = $cfg->emailAttachments()?$response->getAttachments():array();
+            $email->send($user, $msg['subj'], $msg['body'], $attachments,
+                $options);
+        }
+
+        if ($vars['emailcollab']) {
+            $this->notifyCollaborators($response,
+                array(
+                    'signature' => $signature,
+                    'from_name' => $from_name)
+            );
+        }
+        return $response;
+    }
+
     //Activity log - saved as internal notes WHEN enabled!!
     function logActivity($title, $note) {
         return $this->logNote($title, $note, 'SYSTEM', false);
