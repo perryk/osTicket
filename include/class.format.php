@@ -387,14 +387,14 @@ class Format {
     //Format text for display..
     function display($text, $inline_images=true, $balance=true) {
         // Make showing offsite images optional
-        $text = preg_replace_callback('/<img ([^>]*)(src="http[^"]+")([^>]*)\/>/',
-            function($match) {
-                // Drop embedded classes -- they don't refer to ours
-                $match = preg_replace('/class="[^"]*"/', '', $match);
-                return sprintf('<span %s class="non-local-image" data-%s %s></span>',
-                    $match[1], $match[2], $match[3]);
-            },
-            $text);
+        // $text = preg_replace_callback('/<img ([^>]*)(src="http[^"]+")([^>]*)\/>/',
+        //     function($match) {
+        //         // Drop embedded classes -- they don't refer to ours
+        //         $match = preg_replace('/class="[^"]*"/', '', $match);
+        //         return sprintf('<span %s class="non-local-image" data-%s %s></span>',
+        //             $match[1], $match[2], $match[3]);
+        //     },
+        //      $text);
 
         if ($balance)
             $text = self::html_balance($text, false);
