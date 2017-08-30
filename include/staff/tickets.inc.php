@@ -464,8 +464,9 @@ return false;">
 
             <?php
             // Swap some columns based on the queue.
+            unset($queue_columns['priority']);
             if ($showassigned ) {
-                unset($queue_columns['dept']);
+                // unset($queue_columns['dept']);
                 if (!strcasecmp($status,'closed'))
                     $queue_columns['assignee']['heading'] =  __('Closed By');
                 else
@@ -585,14 +586,23 @@ return false;">
                         $displaystatus="<b>$displaystatus</b>";
                     echo "<td>$displaystatus</td>";
                 } else { ?>
-                <td class="nohover" align="center"
+                <!-- <td class="nohover" align="center"
                     style="background-color:<?php echo $T['cdata__:priority__priority_color']; ?>;">
-                    <?php echo $T['cdata__:priority__priority_desc']; ?></td>
+                    <?php echo $T['cdata__:priority__priority_desc']; ?></td> -->
                 <?php
                 }
                 ?>
                 <td nowrap><span class="truncate" style="max-width: 169px"><?php
                     echo Format::htmlchars($lc); ?></span></td>
+                <?php
+                 if ($queue_name != 'assigned') {
+                    $lc = Dept::getLocalById($T['dept_id'], 'name', $T['dept__name']);
+                 ?> 
+                 <td nowrap><span class="truncate" style="max-width: 169px"><?php
+                     echo Format::htmlchars($lc); ?></span></td>
+                 <?php
+                 }
+                 ?>
             </tr>
             <?php
             } //end of foreach
