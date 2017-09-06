@@ -176,7 +176,7 @@ class Validator {
     static function is_phone($phone) {
         /* We're not really validating the phone number but just making sure it doesn't contain illegal chars and of acceptable len */
         $stripped=preg_replace("(\(|\)|\-|\.|\+|[  ]+)","",$phone);
-        return (!is_numeric($stripped) || ((strlen($stripped)<7) || (strlen($stripped)>16)))?false:true;
+        return (!is_numeric($stripped) || ((strlen($stripped)<5) || (strlen($stripped)>16)))?false:true;
     }
 
     static function is_url($url) {
