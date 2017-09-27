@@ -338,6 +338,7 @@ a.overdueTickets { background:url(../images/icons/overdue_tickets.gif) }
 a.answeredTickets { background:url(../images/icons/answered_tickets.gif) }
 a.closedTickets { background:url(../images/icons/closed_tickets.gif) }
 a.newTicket { background:url(../images/icons/new_ticket.gif) }
+a.onholdTickets { background:url(../images/icons/onhold_ticket.gif) }
 
 a.premade { background:url(../images/icons/premade_reply.gif) }
 a.newPremade { background:url(../images/icons/new_premade_reply.gif) }

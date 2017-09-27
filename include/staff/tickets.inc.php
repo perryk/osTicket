@@ -89,10 +89,19 @@ case 'closed':
     $queue_sort_options = array('closed', 'priority,due', 'due',
         'priority,updated', 'priority,created', 'answered', 'number', 'hot');
     break;
+case 'onhold':
+    $status='open';
+    $results_type=__('Onhold Tickets');
+    $showassigned=true; 
+    $tickets->filter(array('status_id'=>6));
+    $queue_sort_options = array('open', 'priority,due', 'due',
+        'priority,updated', 'priority,created', 'answered', 'number', 'hot');
+    break;
 case 'overdue':
     $status='open';
     $results_type=__('Overdue Tickets');
     $tickets->filter(array('isoverdue'=>1));
+    $tickets->filter(array('status_id'=>1));
     $queue_sort_options = array('priority,due', 'due', 'priority,updated',
         'updated', 'answered', 'priority,created', 'number', 'hot');
     break;
@@ -104,6 +113,7 @@ case 'assigned':
         'staff_id'=>$thisstaff->getId(),
         Q::all(array('staff_id' => 0, 'team_id__gt' => 0)),
     )));
+    $tickets->filter(array('status_id'=>1));
     $queue_sort_options = array('updated', 'priority,updated',
         'priority,created', 'priority,due', 'due', 'answered', 'number',
         'hot');
@@ -113,6 +123,7 @@ case 'answered':
     $showanswered=true;
     $results_type=__('Answered Tickets');
     $tickets->filter(array('isanswered'=>1));
+    $tickets->filter(array('status_id'=>1));
     $queue_sort_options = array('answered', 'priority,updated', 'updated',
         'priority,created', 'priority,due', 'due', 'number', 'hot');
     break;
@@ -193,6 +204,7 @@ case 'open':
     $results_type=__('Open Tickets');
     if (!$cfg->showAnsweredTickets())
         $tickets->filter(array('isanswered'=>0));
+        $tickets->filter(array('status_id'=>1));
     $queue_sort_options = array('priority,updated', 'updated',
         'priority,due', 'due', 'priority,created', 'answered', 'number',
         'hot');

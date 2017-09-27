@@ -550,6 +550,10 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
         return ($stats=$this->getTicketsStats())?$stats['closed']:0;
     }
 
+    function getNumOnHoldTickets() {
+        return ($stats=$this->getTicketsStats())?$stats['onhold']:0;
+    }
+
     function getTasksStats() {
 
         if (!$this->stats['tasks'])
