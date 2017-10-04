@@ -145,13 +145,17 @@ if($ticket->isOverdue())
                 <?php
                  }
 
-                 if($ticket->isOpen() && ($dept && $dept->isManager($thisstaff))) {
+                 if($ticket->isOpen() && ($dept)) {
 
-                    if($ticket->isAssigned()) { ?>
+		     if($ticket->isAssigned()) { ?>
                         <li><a  class="confirm-action" id="ticket-release" href="#release"><i class="icon-user"></i> <?php
                             echo __('Release (unassign) Ticket'); ?></a></li>
                     <?php
                     }
+                 }
+
+
+                 if($ticket->isOpen() && ($dept && $dept->isManager($thisstaff) || $thisstaff->isAdmin())) {
 
                     if(!$ticket->isOverdue()) { ?>
                         <li><a class="confirm-action" id="ticket-overdue" href="#overdue"><i class="icon-bell"></i> <?php
