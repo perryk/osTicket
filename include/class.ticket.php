@@ -2696,6 +2696,7 @@ implements RestrictedAccess, Threadable {
 
     function delete($comments='') {
         global $ost, $thisstaff;
+        Signal::send('ticket.before.delete', $this); // Archiver plugin: Added to archive tickets before deleting them.
 
         //delete just orphaned ticket thread & associated attachments.
         // Fetch thread prior to removing ticket entry
