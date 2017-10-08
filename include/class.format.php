@@ -596,14 +596,16 @@ class Format {
                 return $default;
         }
 
+	$tz = 'Australia/Brisbane';
+
         // SYSTEM does not describe a time zone, ensure we have a valid zone
         // by attempting to create an instance of DateTimeZone()
-        try {
-            $timezone = new DateTimeZone($tz);
-            return $timezone->getName();
-        } catch(Exception $ex) {
-            return $default;
-        }
+        #try {
+        #    $timezone = new DateTimeZone($tz);
+        #    return $timezone->getName();
+        #} catch(Exception $ex) {
+        #    return $default;
+        #}
 
         return $tz;
     }
