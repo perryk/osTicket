@@ -55,7 +55,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
     <tbody>
     <tr><td colspan="2"><hr />
         <div class="form-header" style="margin-bottom:0.5em">
-        <b><?php echo __('Help Topic'); ?></b>
+	<b><?php echo __('Help Topic'); ?><?php echo __(' : Please choose a help topic which best matches your request and the department/organisation which is best suited to action this.'); ?></b>
         </div>
     </td></tr>
     <tr>

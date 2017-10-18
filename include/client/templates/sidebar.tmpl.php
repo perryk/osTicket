@@ -13,8 +13,8 @@ $BUTTONS = isset($BUTTONS) ? $BUTTONS : true;
 </p>
 <?php } ?>
 <p>
-            <a href="view.php" style="display:block" class="green button"><?php
-                echo __('Check Ticket Status');?></a>
+            <a href="kb/index.php" style="display:block" class="green button"><?php
+                echo __('Knowledgebase');?></a>
 </p>
         </div>
 <?php } ?>
