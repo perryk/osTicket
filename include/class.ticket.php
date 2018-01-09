@@ -2935,7 +2935,7 @@ implements RestrictedAccess, Threadable {
             ->filter(Q::any($visibility))
             ->filter(array('status__state' => 'open'))
             ->aggregate(array('count' => SqlAggregate::COUNT('ticket_id')))
-            ->values('status__state', 'isanswered', 'isoverdue','staff_id', 'team_id');
+            ->values('status__state', 'isanswered', 'isoverdue','staff_id', 'team_id', 'status_id');
 
         $stats = array();
         $hideassigned = ($cfg && !$cfg->showAssignedTickets()) && !$staff->showAssignedTickets();
@@ -2944,21 +2944,27 @@ implements RestrictedAccess, Threadable {
         foreach ($blocks as $S) {
             if ($showanswered || !$S['isanswered']) {
                 if (!($hideassigned && ($S['staff_id'] || $S['team_id'])))
-                    $stats['open'] += $S['count'];
+                    if ($S['status_id'] != 6)
+                       $stats['open'] += $S['count'];
             }
             else {
-                $stats['answered'] += $S['count'];
+                if ($S['status_id'] != 6)
+                   $stats['answered'] += $S['count'];
             }
+            if ($S['status_id'] == 6)
+                $stats['onhold'] += $S['count'];
             if ($S['isoverdue'])
                 $stats['overdue'] += $S['count'];
             if ($S['staff_id'] == $id)
-                $stats['assigned'] += $S['count'];
-            elseif ($S['team_id']
+                if ($S['status_id'] != 6)
+                   $stats['assigned'] += $S['count'];
+            if ($S['team_id']
                     && $S['staff_id'] == 0
                     && $teams
                     && in_array($S['team_id'], $teams))
                 // Assigned to my team but uassigned to an agent
-                $stats['assigned'] += $S['count'];
+                if ($S['status_id'] != 6)
+                   $stats['assigned'] += $S['count'];
         }
         return $stats;
     }

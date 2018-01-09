@@ -402,6 +402,14 @@ if($stats['assigned']) {
                         ($_REQUEST['status']=='assigned'));
 }
 
+if($stats['onhold']) {
+    $nav->addSubMenu(array('desc' => __('On Hold').' ('.number_format($stats['onhold']).')',
+                       'title'=>__('On Hold Tickets'),
+                       'href'=>'tickets.php?status=onhold',
+                       'iconclass'=>'onholdTickets'),
+                    ($_REQUEST['status']=='onhold'));
+}
+
 if($stats['overdue']) {
     $nav->addSubMenu(array('desc'=>__('Overdue').' ('.number_format($stats['overdue']).')',
                            'title'=>__('Stale Tickets'),
