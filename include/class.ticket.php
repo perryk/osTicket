@@ -1212,7 +1212,9 @@ implements RestrictedAccess, Threadable {
 
                 $this->closed = $this->lastupdate = SqlFunction::NOW();
                 $this->duedate = null;
-                if ($thisstaff && $set_closing_agent)
+                if ($thisstaff && $set_closing_agent && ($this->staff_id != $thisstaff->getId()))
+                    // Logging this assignment for better accuracy in reporting
+                    $this->logEvent('assigned', array('claim' => true));
                     $this->staff = $thisstaff;
                 $this->clearOverdue(false);
 
