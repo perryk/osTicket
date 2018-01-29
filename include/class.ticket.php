@@ -2516,6 +2516,8 @@ implements RestrictedAccess, Threadable {
                 && $cfg->autoClaimTickets()
                 && !$dept->disableAutoClaim());
         if ($claim && $thisstaff && $this->isOpen() && !$this->getStaffId()) {
+            // Logging this assignment for better accuracy in reporting
+            $this->logEvent('assigned', array('claim' => true));
             $this->setStaffId($thisstaff->getId()); //direct assignment;
         }
 
